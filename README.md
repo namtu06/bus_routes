@@ -1,1 +1,8 @@
-This is a template readme file to enforce main default branch. Edit this file as you see fit.
+# COMP.CS.300 Fall 2026
+
+- https://plus2.tuni.fi/COMP.CS.300/fall-2026p2/
+
+## Cloning
+
+- git clone --recursive [your_repo_url]
+
