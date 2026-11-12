@@ -111,34 +111,39 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: .size() method of unordered_map has constant complexity as per cppreference.com
     int stop_count();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: .clear() method of unordered map has linear complexity
+    // in the number of elements in the unordered_map (cppreference.com)
     void clear_all();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: The program has to iterate through every single element in the stop list
+    // to add to the vector to be returned.
     std::vector<StopID> all_stops();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant on average if stop exists (.find() for unordered_map on cppreference)
+    // Amortized constant on average if stop does not exist (.emplace() for unordered_map on cppreference)
+    // Short rationale for estimate: The program has to check if the stop already exists, only if it doesn't exist
+    // do we add the stop
     bool add_stop(StopID id, Name const& name, Coord xy);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Utilizes .find() to both check for stop's existence and get name (cppreference)
     Name get_stop_name(StopID);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Utilizes .find() to both check for stop's existence and get name (cppreference)
     Coord get_stop_coord(StopID id);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N log(N))
+    // Short rationale for estimate: all_stops is O(N), sorting is O(N log(N)), lookup with .at() is O(1) on average (cppreference)
+
     std::vector<StopID> stops_alphabetically();
 
     // Estimate of performance:
@@ -246,6 +251,17 @@ private:
     // Explain below your rationale for choosing the data structures you use in
     // this class.
 
+    // Define struct for a single stop, with name and its coordinate
+    struct Stop {
+        Name name;
+        Coord coord;
+    };
+
+
+    // Defining the "working space" for the entire project
+    // Each stop has its own *unique ID*, meaning we don't have to worry about overlapping ID
+    // and searching via key with this is asymptoticaly fastest (from the table provided in the lecture videos)
+    std::unordered_map<StopID, Stop> stops;
 };
 
 #endif // DATASTRUCTURES_HH

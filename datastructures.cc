@@ -40,45 +40,73 @@ Datastructures::~Datastructures()
 
 int Datastructures::stop_count()
 {
-    // replace with your implementation
-    throw NotImplemented();
+    return stops.size();
 }
 
 void Datastructures::clear_all()
 {
-    // replace with your implementation
-    throw NotImplemented();
+
+    stops.clear();
 }
 
 std::vector<StopID> Datastructures::all_stops()
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<StopID> all;
+    for (const auto& pair: stops){
+        all.push_back(pair.first);
+    }
+
+    return all;
 }
 
-bool Datastructures::add_stop(StopID /*id*/, const Name& /*name*/, Coord /*xy*/)
+bool Datastructures::add_stop(StopID id, const Name& name, Coord xy)
 {
-    // replace with your implementation
-    throw NotImplemented();
 
+    if(stops.find(id) != stops.end()){
+        return false;
+    }
+
+    Stop stop_to_add = {name, xy};
+    stops.emplace(id, stop_to_add);
+    return true;
 }
 
-Name Datastructures::get_stop_name(StopID /*id*/)
+Name Datastructures::get_stop_name(StopID id)
 {
-    // replace with your implementation
-    throw NotImplemented();
+
+    auto stop_itr = stops.find(id);
+
+    if(stops.find(id) == stops.end()){
+        return NO_NAME;
+    }
+
+    return stop_itr->second.name;
 }
 
-Coord Datastructures::get_stop_coord(StopID /*id*/)
+Coord Datastructures::get_stop_coord(StopID id)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    auto stop_itr = stops.find(id);
+
+    if(stop_itr == stops.end()){
+        return NO_COORD;
+    }
+
+    return stop_itr->second.coord;
 }
 
 std::vector<StopID> Datastructures::stops_alphabetically()
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<StopID> all = all_stops();
+
+    std::sort(all.begin(), all.end(),
+        [this](StopID id1, StopID id2) {
+            const Stop& stop1 = this->stops.at(id1);
+            const Stop& stop2 = this->stops.at(id2);
+
+            return stop1.name < stop2.name;
+        });
+
+    return all;
 }
 
 std::vector<StopID> Datastructures::stops_coord_order()
