@@ -263,6 +263,7 @@ private:
     // and searching via key with this is asymptoticaly fastest (from the table provided in the lecture videos)
     std::unordered_map<StopID, Stop> stops;
 
+    std::vector<StopID> stop_ids_in_order_;
     // Define struct for each region similarly to Stop. This (personally) helps with code-reading,
     // the surrounding functions will be similar to that of Stop's.
     struct Region {

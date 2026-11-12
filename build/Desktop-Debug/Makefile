@@ -398,6 +398,7 @@ DIST          = /opt/lintula/qt6/mkspecs/features/spec_pre.prf \
 		/opt/lintula/qt6/mkspecs/features/qt_config.prf \
 		/opt/lintula/qt6/mkspecs/linux-g++/qmake.conf \
 		/opt/lintula/qt6/mkspecs/features/spec_post.prf \
+		../../.qmake.stash \
 		/opt/lintula/qt6/mkspecs/features/exclusive_builds.prf \
 		/opt/lintula/qt6/mkspecs/features/toolchain.prf \
 		/opt/lintula/qt6/mkspecs/features/default_pre.prf \
@@ -774,6 +775,7 @@ Makefile: ../../tiraka_project.pro /opt/lintula/qt6/mkspecs/linux-g++/qmake.conf
 		/opt/lintula/qt6/mkspecs/features/qt_config.prf \
 		/opt/lintula/qt6/mkspecs/linux-g++/qmake.conf \
 		/opt/lintula/qt6/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/opt/lintula/qt6/mkspecs/features/exclusive_builds.prf \
 		/opt/lintula/qt6/mkspecs/features/toolchain.prf \
 		/opt/lintula/qt6/mkspecs/features/default_pre.prf \
@@ -1139,6 +1141,7 @@ Makefile: ../../tiraka_project.pro /opt/lintula/qt6/mkspecs/linux-g++/qmake.conf
 /opt/lintula/qt6/mkspecs/features/qt_config.prf:
 /opt/lintula/qt6/mkspecs/linux-g++/qmake.conf:
 /opt/lintula/qt6/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /opt/lintula/qt6/mkspecs/features/exclusive_builds.prf:
 /opt/lintula/qt6/mkspecs/features/toolchain.prf:
 /opt/lintula/qt6/mkspecs/features/default_pre.prf:

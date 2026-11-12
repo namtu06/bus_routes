@@ -68,6 +68,7 @@ bool Datastructures::add_stop(StopID id, const Name& name, Coord xy)
 
     Stop stop_to_add = {name, xy};
     stops.emplace(id, stop_to_add);
+
     return true;
 }
 
@@ -94,22 +95,25 @@ Coord Datastructures::get_stop_coord(StopID id)
     return stop_itr->second.coord;
 }
 
+
+// NEED TO CHECK WITH TA!!!!!!!!!!
+// "Order does not matter if same name" but does NOT pass test locally and on CodeGrade
+// Out out order because using unoredered_map for the containers
 std::vector<StopID> Datastructures::stops_alphabetically()
 {
+
     std::vector<StopID> all = all_stops();
 
     std::sort(all.begin(), all.end(),
         [this](StopID id1, StopID id2) {
-            const Stop& stop1 = this->stops.at(id1);
-            const Stop& stop2 = this->stops.at(id2);
+            const Name& name1 = stops.at(id1).name;
+            const Name& name2 = stops.at(id2).name;
 
-
-            if (stop1.name != stop2.name) {
-                return stop1.name < stop2.name;
+            if (name1 != name2) {
+                return name1 < name2;
             }
 
-            // If same name then compare by coords
-            return stop1.coord < stop2.coord;
+            return id1 < id2;
         });
 
     return all;
@@ -173,7 +177,7 @@ bool Datastructures::add_region(RegionID id, const Name& name)
         return false;
     }
 
-    Region region_to_add = {name, {NO_STOP}, NO_REGION, {NO_REGION}};
+    Region region_to_add = {name, {}, NO_REGION, {}};
     regions.emplace(id, region_to_add);
     return true;
 }
