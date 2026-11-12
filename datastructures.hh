@@ -143,49 +143,48 @@ public:
 
     // Estimate of performance: O(N log(N))
     // Short rationale for estimate: all_stops is O(N), sorting is O(N log(N)), lookup with .at() is O(1) on average (cppreference)
-
     std::vector<StopID> stops_alphabetically();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N log(N))
+    // Short rationale for estimate: all_stops is O(N), sorting is O(N log(N)), lookup with .at() is O(1) on average (cppreference)
     std::vector<StopID> stops_coord_order();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N * L), where N is the number of stops, L is the length of the name string
+    // Short rationale for estimate: Iterate through the entire unordered_map to find matching strings O(N), comparing O(L), push_back constant time
     std::vector<StopID> find_stops(Name const& name);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant on average
+    // Short rationale for estimate: .find() takes O(1) in both cases stop does not and does exist, assume replacing the name is constant therefore also O(1)
     bool change_stop_name(StopID id, Name const& newname);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant on average
+    // Short rationale for estimate: .find() takes O(1) in both cases stop does not and does exist, assume replacing the coord is constant therefore also O(1)
     bool change_stop_coord(StopID id, Coord newcoord);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Similarly to add_stop, .find() is O(1) in both cases of existence, .emplace() is also O(1)
     bool add_region(RegionID id, Name const& name);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: .find() is O(1), accessing the name is also assumed to be O(1).
     Name get_region_name(RegionID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N log(N))
+    // Short rationale for estimate: the function iterates through every element which takes O(N), sorting takes O(N log N).
     std::vector<RegionID> all_regions();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Finding, checking, accessing and updating the values all O(1)
     bool add_stop_to_region(StopID id, RegionID parentid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Finding, checking, accessing and updating the values all O(1)
     bool add_subregion_to_region(RegionID id, RegionID parentid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N), where N is the number of regions
+    // Short rationale for estimate: finding and checking stop's attributes O(1), travelling upwards starting from the smallest subregion in a while loop O(N).
     std::vector<RegionID> stop_regions(StopID id);
 
     // Estimate of performance:
@@ -251,10 +250,11 @@ private:
     // Explain below your rationale for choosing the data structures you use in
     // this class.
 
-    // Define struct for a single stop, with name and its coordinate
+    // Define struct for a single stop, with name, its coordinate, and which region it belongs to.
     struct Stop {
         Name name;
         Coord coord;
+        RegionID region = NO_REGION;
     };
 
 
@@ -262,6 +262,20 @@ private:
     // Each stop has its own *unique ID*, meaning we don't have to worry about overlapping ID
     // and searching via key with this is asymptoticaly fastest (from the table provided in the lecture videos)
     std::unordered_map<StopID, Stop> stops;
+
+    // Define struct for each region similarly to Stop. This (personally) helps with code-reading,
+    // the surrounding functions will be similar to that of Stop's.
+    struct Region {
+        Name name;
+        std::vector<StopID> stops;
+        RegionID parent = NO_REGION;
+        std::vector<RegionID> subregions;
+    };
+
+    // Define container for regions. Similar reasoning with stops.
+    // Also has a unique ID and the corresponding information, don't have to worry about overlapping ID
+    std::unordered_map<RegionID, Region> regions;
+
 };
 
 #endif // DATASTRUCTURES_HH
