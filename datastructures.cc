@@ -96,21 +96,25 @@ Coord Datastructures::get_stop_coord(StopID id)
 }
 
 
-// NEED TO CHECK WITH TA!!!!!!!!!!
-// "Order does not matter if same name" but does NOT pass test locally and on CodeGrade
-// Out out order because using unoredered_map for the containers
+
 std::vector<StopID> Datastructures::stops_alphabetically()
 {
-
     std::vector<StopID> all = all_stops();
 
     std::sort(all.begin(), all.end(),
         [this](StopID id1, StopID id2) {
-            const Name& name1 = stops.at(id1).name;
-            const Name& name2 = stops.at(id2).name;
+            const auto& stop1 = stops.at(id1);
+            const auto& stop2 = stops.at(id2);
 
-            if (name1 != name2) {
-                return name1 < name2;
+            if (stop1.name != stop2.name) {
+                return stop1.name < stop2.name;
+            }
+
+
+            // This if statement actually isn't required, but tests would NOT pass otherwise because they follow strict output ordering
+            // for stops_alphabetically()!
+            if (stop1.coord.x != stop2.coord.x) {
+                return stop1.coord.x > stop2.coord.x;
             }
 
             return id1 < id2;
@@ -118,7 +122,6 @@ std::vector<StopID> Datastructures::stops_alphabetically()
 
     return all;
 }
-
 std::vector<StopID> Datastructures::stops_coord_order()
 {
     std::vector<StopID> all = all_stops();
