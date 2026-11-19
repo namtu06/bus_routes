@@ -47,6 +47,7 @@ void Datastructures::clear_all()
 {
     stops.clear();
     regions.clear();
+    routes.clear();
 }
 
 std::vector<StopID> Datastructures::all_stops()
@@ -466,40 +467,92 @@ RegionID Datastructures::stops_common_region(StopID id1, StopID id2)
 }
 
 
-bool Datastructures::add_route(RouteID /*id*/, std::vector<StopID> /*stops*/)
+bool Datastructures::add_route(RouteID id, std::vector<StopID> stops)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    auto route_itr = routes.find(id);
+
+    if(route_itr != routes.end() || stops.size() < 2){
+        return false;
+    }
+
+    for(StopID stop_id: stops){
+        if(this->stops.find(stop_id) == this->stops.end()){
+            return false;
+        }
+    }
+
+    Route new_route;
+    new_route.stops = stops;
+
+    routes.insert({id, new_route});
+    return true;
 }
 
 std::vector<RouteID> Datastructures::all_routes()
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<RouteID> results;
+    for (const auto& pair : routes){
+        results.push_back(pair.first);
+    }
+
+    return results;
 }
 
-bool Datastructures::remove_route(RouteID /*id*/)
+bool Datastructures::remove_route(RouteID id)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    auto route_itr = routes.find(id);
+
+    if(route_itr == routes.end()){
+        return false;
+    }
+
+    routes.erase(id);
+    return true;
+
 }
 
-std::vector<std::pair<RouteID, StopID>> Datastructures::routes_from(StopID /*stopid*/)
+std::vector<std::pair<RouteID, StopID>> Datastructures::routes_from(StopID stopid)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<std::pair<RouteID, StopID>> results;
+
+    auto stop_itr = stops.find(stopid);
+
+    // Stop doesn't exist
+    if (stop_itr == stops.end()) {
+        return {{NO_ROUTE, NO_STOP}};
+    }
+
+    for (const auto& pair : routes) {
+        const auto& route_stops = pair.second.stops;
+
+        // Check every position in the route
+        for (std::size_t i = 0; i < route_stops.size() - 1; ++i) {
+
+            if (route_stops[i] == stopid) {
+                results.push_back({pair.first, route_stops[i + 1]});
+            }
+        }
+    }
+
+    return results;
 }
 
-std::vector<StopID> Datastructures::route_stops(RouteID /*id*/)
+std::vector<StopID> Datastructures::route_stops(RouteID id)
 {
-    // replace with your implementation
-    throw NotImplemented();
+
+
+    auto route_itr = routes.find(id);
+
+    if(route_itr == routes.end()){
+        return {NO_STOP};
+    }
+
+    return route_itr->second.stops;
 }
 
 void Datastructures::clear_routes()
 {
-    // replace with your implementation
-    throw NotImplemented();
+    routes.clear();
 }
 
 std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_any(StopID /*fromstop*/, StopID /*tostop*/)

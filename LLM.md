@@ -5,7 +5,7 @@
 
 ### Part B:
 - region_bounding_box
-
+- add_stops
 ## Which language models were used
 
 - ChatGPT (main)
@@ -17,8 +17,8 @@
 the functions met the requirements. I wanted to get a diagnosis and kooditorio hours/TA help was not available at the moment I was trying to fix it.
 
 ### Part B: 
-- Helped define the specific data type needed for min and max coordinates in region_bounding_box, because it kept throwing error. 
-
+- Helped define the specific data type needed for min and max coordinates in region_bounding_box, because it kept throwing error. Also helped in gaining understanding of what to iterate through to determine min and max values.
+- Needed help on how to work with containers of the exact same name in add_stops.
 ## How and why the language model helped
 
 - Remind what STL functions are at my disposal when implementing the class function.

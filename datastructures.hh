@@ -204,24 +204,24 @@ public:
     // Short rationale for estimate: The function travels up the region tree for both stops. Best case scenario they are in the same smallest region already.
     RegionID stops_common_region(StopID id1, StopID id2);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Need to iterate through the proposed stops vector to check for validity O(N), best case first stop doesn't exist so function exists immediately.
     bool add_route(RouteID id, std::vector<StopID> stops);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: Iterate through the entire unordered map.
     std::vector<RouteID> all_routes();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: Finding the route by ID O(1) + removing the route by ID O(1), all in unordered map
     bool remove_route(RouteID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(R x N) where R is the number of routes and average number of stops in a route
+    // Short rationale for estimate: Loops through every route, and also loops through every stops in a route
     std::vector<std::pair<RouteID, StopID>> routes_from(StopID stopid);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: O(1) route lookup + O(N) for copying the elements if applicable.
     std::vector<StopID> route_stops(RouteID id);
 
     // Estimate of performance:
@@ -258,13 +258,12 @@ private:
         RegionID region = NO_REGION;
     };
 
-
-    // Defining the "working space" for the entire project
     // Each stop has its own *unique ID*, meaning we don't have to worry about overlapping ID
     // and searching via key with this is asymptoticaly fastest (from the table provided in the lecture videos)
     std::unordered_map<StopID, Stop> stops;
 
-    std::vector<StopID> stop_ids_in_order_;
+
+
     // Define struct for each region similarly to Stop. This (personally) helps with code-reading,
     // the surrounding functions will be similar to that of Stop's.
     struct Region {
@@ -277,6 +276,16 @@ private:
     // Define container for regions. Similar reasoning with stops.
     // Also has a unique ID and the corresponding information, don't have to worry about overlapping ID
     std::unordered_map<RegionID, Region> regions;
+
+
+
+    // Define Route struct
+    struct Route{
+        std::vector<StopID> stops;
+    };
+
+    // Define container for routes. Each route is defined by unique ID so unordered_map works here
+    std::unordered_map<RouteID, Route> routes;
 
     // Helper function for calculating distance
     int calculate_distance(StopID id1, StopID id2);
