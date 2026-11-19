@@ -187,16 +187,17 @@ public:
     // Short rationale for estimate: finding and checking stop's attributes O(1), travelling upwards starting from the smallest subregion in a while loop O(N).
     std::vector<RegionID> stop_regions(StopID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N log N)
+    // Short rationale for estimate: O(N) for iterating through the stops + O(N logN) for actually sorting the distances vector
+    // = O(N logN)
     std::vector<StopID> stops_closest_to(StopID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(N)
+    // Short rationale for estimate: finding stop and associated region O(1), remove from region's stops vector O(N), remove from major stops unordered map O(1)
     bool remove_stop(StopID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(R + S), where R is the number of regions the stop is in, S is the number of stops within each region
+    // Short rationale for estimate: Find initial region O(1) + visit all regions and their stops O(R + S)
     std::pair<Coord, Coord> region_bounding_box(RegionID id);
 
     // Estimate of performance:

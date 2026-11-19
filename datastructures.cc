@@ -341,18 +341,80 @@ bool Datastructures::remove_stop(StopID id)
         return false;
     }
 
+    auto region_itr = regions.find(stop_itr->second.region);
     auto& region_stops = region_itr->second.stops;
     auto itr = std::find(region_stops.begin(), region_stops.end(), id);
 
     if (itr != region_stops.end()) {
         region_stops.erase(itr);
     }
+
+    stops.erase(stop_itr);
+
+    return true;
 }
 
-std::pair<Coord,Coord> Datastructures::region_bounding_box(RegionID /*id*/)
+std::pair<Coord, Coord> Datastructures::region_bounding_box(RegionID id)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    auto region_itr = regions.find(id);
+
+    if (region_itr == regions.end()) {
+        return {NO_COORD, NO_COORD};
+    }
+
+    int min_x = 0;
+    int min_y = 0;
+    int max_x = 0;
+    int max_y = 0;
+
+    bool found_stop = false;
+
+    std::vector<RegionID> to_visit = {id};
+
+    while (to_visit.empty() == false) {
+
+        RegionID current_id = to_visit.back();
+        to_visit.pop_back();
+
+        auto current_region = regions.find(current_id);
+
+        // Process stops belonging directly to this region
+        for (StopID stop_id : current_region->second.stops) {
+
+            auto stop_itr = stops.find(stop_id);
+
+            if (stop_itr == stops.end()) {
+                continue;
+            }
+
+            Coord coord = stop_itr->second.coord;
+
+            if (found_stop == false) {
+                min_x = coord.x;
+                min_y = coord.y;
+                max_x = coord.x;
+                max_y = coord.y;
+                found_stop = true;
+            }
+            else {
+                min_x = std::min(min_x, coord.x);
+                min_y = std::min(min_y, coord.y);
+                max_x = std::max(max_x, coord.x);
+                max_y = std::max(max_y, coord.y);
+            }
+        }
+
+        // Visit subregions
+        for (RegionID subregion_id : current_region->second.subregions) {
+            to_visit.push_back(subregion_id);
+        }
+    }
+
+    if (found_stop == false) {
+        return {NO_COORD, NO_COORD};
+    }
+
+    return {{min_x, min_y}, {max_x, max_y}};
 }
 
 RegionID Datastructures::stops_common_region(StopID /*id1*/, StopID /*id2*/)
