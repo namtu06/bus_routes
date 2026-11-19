@@ -224,8 +224,8 @@ public:
     // Short rationale for estimate: O(1) route lookup + O(N) for copying the elements if applicable.
     std::vector<StopID> route_stops(RouteID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: Constant
+    // Short rationale for estimate: unordered map clear O(1) as per cppreferences.
     void clear_routes();
 
     // Estimate of performance:
