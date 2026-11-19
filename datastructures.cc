@@ -417,10 +417,15 @@ std::pair<Coord, Coord> Datastructures::region_bounding_box(RegionID id)
     return {{min_x, min_y}, {max_x, max_y}};
 }
 
-RegionID Datastructures::stops_common_region(StopID /*id1*/, StopID /*id2*/)
+RegionID Datastructures::stops_common_region(StopID id1, StopID id2)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    auto stop_itr1 = stops.find(id1);
+    auto stop_itr2 = stops.find(id2);
+
+    // Stop doesn't exist
+    if (stop_itr1 == stops.end() || stop_itr2 == stops.end()) {
+        return ;
+    }
 }
 
 
