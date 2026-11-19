@@ -200,8 +200,8 @@ public:
     // Short rationale for estimate: Find initial region O(1) + visit all regions and their stops O(R + S)
     std::pair<Coord, Coord> region_bounding_box(RegionID id);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(R1 + R2), where R1 and R2 are the number of regions stop 1 and 2 are in respectively.
+    // Short rationale for estimate: The function travels up the region tree for both stops. Best case scenario they are in the same smallest region already.
     RegionID stops_common_region(StopID id1, StopID id2);
 
     // Estimate of performance:

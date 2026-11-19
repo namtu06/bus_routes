@@ -373,6 +373,7 @@ std::pair<Coord, Coord> Datastructures::region_bounding_box(RegionID id)
 
     while (to_visit.empty() == false) {
 
+        // Remove region in the vector because we are going to process it
         RegionID current_id = to_visit.back();
         to_visit.pop_back();
 
@@ -424,8 +425,44 @@ RegionID Datastructures::stops_common_region(StopID id1, StopID id2)
 
     // Stop doesn't exist
     if (stop_itr1 == stops.end() || stop_itr2 == stops.end()) {
-        return ;
+        return NO_REGION;
     }
+
+    // Container to keep track of regions of interest, order doesn't matter
+    std::unordered_set<RegionID> all_regions;
+    RegionID current = stop_itr1->second.region;
+
+    // Travel upwards and collect all regions until can't go up anymore for stop 1.
+    while (current != NO_REGION){
+        all_regions.insert(current);
+        auto region_itr = regions.find(current);
+
+        if (region_itr == regions.end()) {
+                break;
+        }
+
+        current = region_itr->second.parent;
+    }
+
+    // Travel upwards regions for stop 2 until common region is found, if not, break loop and return NO_REGION
+    current = stop_itr2->second.region;
+
+    while (current != NO_REGION){
+
+        if (all_regions.find(current) != all_regions.end()) {
+                    return current;
+        }
+
+        auto region_itr = regions.find(current);
+
+        if (region_itr == regions.end()) {
+                break;
+        }
+
+        current = region_itr->second.parent;
+    }
+
+    return NO_REGION;
 }
 
 
