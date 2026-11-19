@@ -183,7 +183,7 @@ public:
     // Short rationale for estimate: Finding, checking, accessing and updating the values all O(1)
     bool add_subregion_to_region(RegionID id, RegionID parentid);
 
-    // Estimate of performance: O(N), where N is the number of regions
+    // Estimate of performance: O(N), where N is the number of regions containing the stop
     // Short rationale for estimate: finding and checking stop's attributes O(1), travelling upwards starting from the smallest subregion in a while loop O(N).
     std::vector<RegionID> stop_regions(StopID id);
 
@@ -277,6 +277,8 @@ private:
     // Also has a unique ID and the corresponding information, don't have to worry about overlapping ID
     std::unordered_map<RegionID, Region> regions;
 
+    // Helper function for calculating distance
+    int calculate_distance(StopID id1, StopID id2);
 };
 
 #endif // DATASTRUCTURES_HH

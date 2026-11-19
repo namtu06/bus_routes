@@ -50,4 +50,7 @@ FORMS += course_code/mainwindow.ui
 #CONFIG -= core gui qt widgets
 #CONFIG += console
 
+DISTFILES += \
+    LLM.md
+
 

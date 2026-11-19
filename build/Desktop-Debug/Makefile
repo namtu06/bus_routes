@@ -59,7 +59,8 @@ OBJECTS       = datastructures.o \
 		mainwindow.o \
 		mainprogram.o \
 		moc_mainwindow.o
-DIST          = /opt/lintula/qt6/mkspecs/features/spec_pre.prf \
+DIST          = ../../LLM.md \
+		/opt/lintula/qt6/mkspecs/features/spec_pre.prf \
 		/opt/lintula/qt6/mkspecs/common/unix.conf \
 		/opt/lintula/qt6/mkspecs/common/linux.conf \
 		/opt/lintula/qt6/mkspecs/common/sanitize.conf \
@@ -1664,7 +1665,62 @@ mainwindow.o: ../../course_code/mainwindow.cc ../../course_code/mainprogram.hh \
 		/opt/lintula/qt6/include/QtWidgets/qgraphicsscene.h \
 		ui_mainwindow.h \
 		/opt/lintula/qt6/include/QtWidgets/QApplication \
-		/opt/lintula/qt6/include/QtWidgets/qapplication.h
+		/opt/lintula/qt6/include/QtWidgets/qapplication.h \
+		/opt/lintula/qt6/include/QtWidgets/QCheckBox \
+		/opt/lintula/qt6/include/QtWidgets/qcheckbox.h \
+		/opt/lintula/qt6/include/QtWidgets/qabstractbutton.h \
+		/opt/lintula/qt6/include/QtWidgets/QComboBox \
+		/opt/lintula/qt6/include/QtWidgets/qcombobox.h \
+		/opt/lintula/qt6/include/QtWidgets/qabstractitemdelegate.h \
+		/opt/lintula/qt6/include/QtWidgets/qstyleoption.h \
+		/opt/lintula/qt6/include/QtWidgets/qabstractspinbox.h \
+		/opt/lintula/qt6/include/QtGui/qvalidator.h \
+		/opt/lintula/qt6/include/QtCore/qregularexpression.h \
+		/opt/lintula/qt6/include/QtWidgets/qslider.h \
+		/opt/lintula/qt6/include/QtWidgets/qabstractslider.h \
+		/opt/lintula/qt6/include/QtWidgets/qstyle.h \
+		/opt/lintula/qt6/include/QtWidgets/qtabbar.h \
+		/opt/lintula/qt6/include/QtWidgets/qrubberband.h \
+		/opt/lintula/qt6/include/QtWidgets/qframe.h \
+		/opt/lintula/qt6/include/QtCore/qabstractitemmodel.h \
+		/opt/lintula/qt6/include/QtWidgets/QDoubleSpinBox \
+		/opt/lintula/qt6/include/QtWidgets/qspinbox.h \
+		/opt/lintula/qt6/include/QtWidgets/QGraphicsView \
+		/opt/lintula/qt6/include/QtWidgets/qgraphicsview.h \
+		/opt/lintula/qt6/include/QtGui/qpainter.h \
+		/opt/lintula/qt6/include/QtGui/qtextoption.h \
+		/opt/lintula/qt6/include/QtWidgets/qscrollarea.h \
+		/opt/lintula/qt6/include/QtWidgets/qabstractscrollarea.h \
+		/opt/lintula/qt6/include/QtWidgets/QHBoxLayout \
+		/opt/lintula/qt6/include/QtWidgets/qboxlayout.h \
+		/opt/lintula/qt6/include/QtWidgets/qlayout.h \
+		/opt/lintula/qt6/include/QtWidgets/qlayoutitem.h \
+		/opt/lintula/qt6/include/QtWidgets/qgridlayout.h \
+		/opt/lintula/qt6/include/QtWidgets/QLabel \
+		/opt/lintula/qt6/include/QtWidgets/qlabel.h \
+		/opt/lintula/qt6/include/QtGui/qpicture.h \
+		/opt/lintula/qt6/include/QtGui/qtextdocument.h \
+		/opt/lintula/qt6/include/QtWidgets/QLineEdit \
+		/opt/lintula/qt6/include/QtWidgets/qlineedit.h \
+		/opt/lintula/qt6/include/QtGui/qtextcursor.h \
+		/opt/lintula/qt6/include/QtGui/qtextformat.h \
+		/opt/lintula/qt6/include/QtWidgets/QPlainTextEdit \
+		/opt/lintula/qt6/include/QtWidgets/qplaintextedit.h \
+		/opt/lintula/qt6/include/QtWidgets/qtextedit.h \
+		/opt/lintula/qt6/include/QtGui/qabstracttextdocumentlayout.h \
+		/opt/lintula/qt6/include/QtGui/qtextlayout.h \
+		/opt/lintula/qt6/include/QtGui/qglyphrun.h \
+		/opt/lintula/qt6/include/QtGui/qrawfont.h \
+		/opt/lintula/qt6/include/QtGui/qfontdatabase.h \
+		/opt/lintula/qt6/include/QtWidgets/QPushButton \
+		/opt/lintula/qt6/include/QtWidgets/qpushbutton.h \
+		/opt/lintula/qt6/include/QtWidgets/QSpacerItem \
+		/opt/lintula/qt6/include/QtWidgets/QSplitter \
+		/opt/lintula/qt6/include/QtWidgets/qsplitter.h \
+		/opt/lintula/qt6/include/QtWidgets/QToolButton \
+		/opt/lintula/qt6/include/QtWidgets/qtoolbutton.h \
+		/opt/lintula/qt6/include/QtWidgets/QVBoxLayout \
+		/opt/lintula/qt6/include/QtWidgets/QWidget
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../course_code/mainwindow.cc
 
 mainprogram.o: ../../course_code/mainprogram.cc ../../course_code/mainprogram.hh \
