@@ -616,7 +616,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_any(S
     for (std::size_t i = 0; i < path.size(); ++i) {
         if (i > 0) {
             total_distance += std::sqrt(
-                calculate_distance(path[i - 1], path[i])
+                calculate_distance(path[i - 1], path[i]) // sqrt because distance func hasn't performed sqrt yet
             );
         }
 
@@ -626,16 +626,227 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_any(S
     return result;
 }
 
-std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_least_stops(StopID /*fromstop*/, StopID /*tostop*/)
+std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_least_stops(StopID fromstop, StopID tostop)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<std::tuple<StopID, RouteID, Distance>> result;
+
+    auto stop_itr1 = stops.find(fromstop);
+    auto stop_itr2 = stops.find(tostop);
+
+    if(stop_itr1 == stops.end() || stop_itr2 == stops.end()){
+        return {{NO_STOP, NO_ROUTE, NO_DISTANCE}};
+    }
+    else if(fromstop == tostop){
+        return {{fromstop, NO_ROUTE, 0}};
+    }
+
+    // Data structures for BFS - search for least-stops route
+    std::queue<StopID> queue; // stops to be explored
+    std::unordered_set<StopID> visited;
+    std::unordered_map<StopID, std::pair<StopID, RouteID>> previous; // records where each stop was reached from
+
+    // Performing BFS
+    queue.push(fromstop);
+    visited.emplace(fromstop);
+
+    while(!queue.empty() && visited.find(tostop) == visited.end()){
+        StopID current_stop = queue.front();
+        queue.pop();
+
+        for (const auto& neighbour_pair : get_neighbours(current_stop)) {
+            StopID neighbour = neighbour_pair.first;
+            RouteID route_id = neighbour_pair.second;
+
+            if (visited.find(neighbour) == visited.end()) {
+                visited.insert(neighbour);
+                previous[neighbour] = {current_stop, route_id};
+                queue.push(neighbour);
+            }
+        }
+    }
+
+    // Destination not reachable
+    if (visited.find(tostop) == visited.end()) {
+        return {};
+    }
+
+    // Build path
+    std::vector<StopID> path;
+    std::vector<RouteID> route_ids;
+
+    StopID current = tostop;
+
+    while (current != fromstop) {
+        path.push_back(current);
+
+        route_ids.push_back(previous[current].second);
+        current = previous[current].first;
+    }
+
+    path.push_back(fromstop);
+
+    std::reverse(path.begin(), path.end());
+    std::reverse(route_ids.begin(), route_ids.end());
+
+    // Calculate cumulative distances and build result
+    Distance total_distance = 0;
+
+    for (std::size_t i = 0; i < path.size(); ++i) {
+        if (i > 0) {
+            total_distance += std::sqrt(
+                calculate_distance(path[i - 1], path[i])
+            );
+        }
+
+        RouteID route_id = NO_ROUTE;
+        if (i < route_ids.size()) {
+            route_id = route_ids[i];
+        }
+
+        result.push_back({path[i], route_id, total_distance});
+    }
+
+    return result;
 }
 
-std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_cycle(StopID /*fromstop*/)
+std::vector<std::tuple<StopID, RouteID, Distance>>
+Datastructures::journey_with_cycle(StopID fromstop)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<std::tuple<StopID, RouteID, Distance>> result;
+
+    if (stops.find(fromstop) == stops.end()) {
+        return {{NO_STOP, NO_ROUTE, NO_DISTANCE}};
+    }
+
+    std::unordered_set<StopID> visited;
+    std::unordered_set<StopID> active;
+
+    std::unordered_map<StopID, std::pair<StopID, RouteID>> previous;
+
+    StopID cycle_start = NO_STOP;
+    StopID cycle_end = NO_STOP;
+    RouteID cycle_route = NO_ROUTE;
+
+    // DFS for checking cycle existencce
+    std::function<bool(StopID, StopID, RouteID)> dfs =
+        [&](StopID current, StopID parent, RouteID parent_route) {
+
+            visited.insert(current);
+            active.insert(current);
+
+            for (const auto& neighbour_pair : get_neighbours(current)) {
+
+                StopID neighbour = neighbour_pair.first;
+                RouteID route_id = neighbour_pair.second;
+
+                // ignore the edge back to the parent along the same route
+                if (neighbour == parent && route_id == parent_route) {
+                    continue;
+                }
+
+                // cycle found
+                if (active.find(neighbour) != active.end()) {
+                    cycle_start = neighbour;
+                    cycle_end = current;
+                    cycle_route = route_id;
+                    return true;
+                }
+
+                if (visited.find(neighbour) == visited.end()) {
+                    previous[neighbour] = {current, route_id};
+
+                    if (dfs(neighbour, current, route_id)) {
+                        return true;
+                    }
+                }
+            }
+
+            active.erase(current);
+            return false;
+        };
+
+    if (!dfs(fromstop, NO_STOP, NO_ROUTE)) {
+        return {};
+    }
+
+    // Reconstruct path from cycle_start to cycle_end
+    std::vector<StopID> path;
+    std::vector<RouteID> route_ids;
+
+    StopID current = cycle_end;
+
+    while (current != cycle_start) {
+        path.push_back(current);
+        route_ids.push_back(previous[current].second);
+        current = previous[current].first;
+    }
+
+    path.push_back(cycle_start);
+
+    std::reverse(path.begin(), path.end());
+    std::reverse(route_ids.begin(), route_ids.end());
+
+    // Add the route that closes the cycle
+    route_ids.push_back(cycle_route);
+
+    // Add the path from fromstop to cycle_start, if necessary
+    std::vector<StopID> approach;
+    current = cycle_start;
+
+    while (current != fromstop) {
+        approach.push_back(current);
+        current = previous[current].first;
+    }
+
+    approach.push_back(fromstop);
+    std::reverse(approach.begin(), approach.end());
+
+    // Combine approach path and cycle path, avoiding duplicate cycle_start
+    std::vector<StopID> full_path = approach;
+
+    for (std::size_t i = 1; i < path.size(); ++i) {
+        full_path.push_back(path[i]);
+    }
+
+    // Build route IDs for the complete path
+    std::vector<RouteID> full_route_ids;
+
+    for (std::size_t i = 1; i < approach.size(); ++i) {
+        full_route_ids.push_back(previous[approach[i]].second);
+    }
+
+    for (RouteID route_id : route_ids) {
+        full_route_ids.push_back(route_id);
+    }
+
+    // Calculate cumulative distances and build result
+    Distance total_distance = 0;
+
+    for (std::size_t i = 0; i < full_path.size(); ++i) {
+
+        if (i > 0) {
+            total_distance += std::sqrt(
+                calculate_distance(full_path[i - 1], full_path[i])
+            );
+        }
+
+        RouteID route_id = NO_ROUTE;
+
+        if (i < full_route_ids.size()) {
+            route_id = full_route_ids[i];
+        }
+
+        result.push_back({full_path[i], route_id, total_distance});
+    }
+
+    // Append the repeated stop to close the cycle
+    total_distance += std::sqrt(
+        calculate_distance(cycle_end, cycle_start)
+    );
+
+    result.push_back({cycle_start, NO_ROUTE, total_distance});
+
+    return result;
 }
 
 std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_shortest_distance(StopID /*fromstop*/, StopID /*tostop*/)
@@ -646,7 +857,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_short
 
 int Datastructures::calculate_distance(StopID id1, StopID id2)
 {
-    // NEED TO MAKE SURE BOTH STOPS EXIST FIRST BEFORE CALLING FUNCTION
+    // NEED TO MAKE SURE BOTH STOPS EXIST  FIRST BEFORE CALLING FUNCTION!!
 
     auto itr1 = stops.find(id1);
     int x1 = itr1->second.coord.x;
