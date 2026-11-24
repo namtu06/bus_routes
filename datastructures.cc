@@ -801,7 +801,7 @@ Datastructures::journey_with_cycle(StopID fromstop)
     approach.push_back(fromstop);
     std::reverse(approach.begin(), approach.end());
 
-    // Combine approach path and cycle path, avoiding duplicate cycle_start
+    // Combine approach path and cycle path while avoiding duplicate cycle_start
     std::vector<StopID> full_path = approach;
 
     for (std::size_t i = 1; i < path.size(); ++i) {
@@ -897,6 +897,12 @@ Datastructures::get_neighbours(StopID stopid)
             }
         }
     }
+
+    // Sort in correct order so that journey_with_cycle searches the path A before B in test case
+    std::sort(neighbours.begin(), neighbours.end(),
+        [](const auto& a, const auto& b) {
+            return a.second < b.second;
+        });
 
     return neighbours;
 }
