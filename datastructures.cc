@@ -727,8 +727,8 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_
     RouteID cycle_route = NO_ROUTE;
 
     // DFS for checking cycle existencce
-    std::function<bool(StopID, StopID, RouteID)> dfs =
-        [&](StopID current) {
+    std::function<bool(StopID)> dfs =
+        [&](StopID current){
 
             visited.insert(current);
             active.insert(current);
@@ -758,7 +758,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_
                     if (visited.find(neighbour) == visited.end()) {
                         previous[neighbour] = {current, route_id};
 
-                        if (dfs(neighbour, current, route_id)) {
+                        if (dfs(neighbour)) {
                             return true;
                         }
                     }
@@ -769,7 +769,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_
             return false;
         };
 
-    if (!dfs(fromstop, NO_STOP, NO_ROUTE)) {
+    if (dfs(fromstop)) {
         return {};
     }
 

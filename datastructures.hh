@@ -112,151 +112,148 @@ public:
     Datastructures();
     ~Datastructures();
 
-    // Estimate of performance: Constant
+    // Notation for complexities:
+    // N = number of elements being processed (stops, regions, routes, or route stop entries)
+
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: .size() method of unordered_map has constant complexity as per cppreference.com
     int stop_count();
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(N)
     // Short rationale for estimate: .clear() method of unordered map has linear complexity
     // in the number of elements in the unordered_map (cppreference.com)
     void clear_all();
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(N)
     // Short rationale for estimate: The program has to iterate through every single element in the stop list
     // to add to the vector to be returned.
     std::vector<StopID> all_stops();
 
-    // Estimate of performance: Constant on average if stop exists (.find() for unordered_map on cppreference)
+    // Estimate of performance: O(1) on average, Omega(1)
     // Amortized constant on average if stop does not exist (.emplace() for unordered_map on cppreference)
     // Short rationale for estimate: The program has to check if the stop already exists, only if it doesn't exist
     // do we add the stop
     bool add_stop(StopID id, Name const& name, Coord xy);
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Utilizes .find() to both check for stop's existence and get name (cppreference)
     Name get_stop_name(StopID);
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Utilizes .find() to both check for stop's existence and get name (cppreference)
     Coord get_stop_coord(StopID id);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: O(N log(N))
+    // Estimate of performance: O(N log(N)), Omega(N log N)
     // Short rationale for estimate: all_stops is O(N), sorting is O(N log(N)), lookup with .at() is O(1) on average (cppreference)
     std::vector<StopID> stops_alphabetically();
 
-    // Estimate of performance: O(N log(N))
+    // Estimate of performance: O(N log(N)), Omega(N log N)
     // Short rationale for estimate: all_stops is O(N), sorting is O(N log(N)), lookup with .at() is O(1) on average (cppreference)
     std::vector<StopID> stops_coord_order();
 
-    // Estimate of performance: O(N * L), where N is the number of stops, L is the length of the name string
+    // Estimate of performance: O(N * L), Omega(N)
     // Short rationale for estimate: Iterate through the entire unordered_map to find matching strings O(N), comparing O(L), push_back constant time
     std::vector<StopID> find_stops(Name const& name);
 
-    // Estimate of performance: Constant on average
+    // Estimate of performance: O(1) on average, Omega(1)
     // Short rationale for estimate: .find() takes O(1) in both cases stop does not and does exist, assume replacing the name is constant therefore also O(1)
     bool change_stop_name(StopID id, Name const& newname);
 
-    // Estimate of performance: Constant on average
+    // Estimate of performance: O(1) on average, Omega(1)
     // Short rationale for estimate: .find() takes O(1) in both cases stop does not and does exist, assume replacing the coord is constant therefore also O(1)
     bool change_stop_coord(StopID id, Coord newcoord);
 
     // We recommend you implement the operations below only after implementing the ones above
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Similarly to add_stop, .find() is O(1) in both cases of existence, .emplace() is also O(1)
     bool add_region(RegionID id, Name const& name);
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: .find() is O(1), accessing the name is also assumed to be O(1).
     Name get_region_name(RegionID id);
 
-    // Estimate of performance: O(N log(N))
+    // Estimate of performance: O(N log(N)), Omega(N log N)
     // Short rationale for estimate: the function iterates through every element which takes O(N), sorting takes O(N log N).
     std::vector<RegionID> all_regions();
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Finding, checking, accessing and updating the values all O(1)
     bool add_stop_to_region(StopID id, RegionID parentid);
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Finding, checking, accessing and updating the values all O(1)
     bool add_subregion_to_region(RegionID id, RegionID parentid);
 
-    // Estimate of performance: O(N), where N is the number of regions containing the stop
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: finding and checking stop's attributes O(1), travelling upwards starting from the smallest subregion in a while loop O(N).
     std::vector<RegionID> stop_regions(StopID id);
 
-    // Estimate of performance: O(N log N)
+    // Estimate of performance: O(N log N), Omega(N log N)
     // Short rationale for estimate: O(N) for iterating through the stops + O(N logN) for actually sorting the distances vector
     // = O(N logN)
     std::vector<StopID> stops_closest_to(StopID id);
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: finding stop and associated region O(1), remove from region's stops vector O(N), remove from major stops unordered map O(1)
     bool remove_stop(StopID id);
 
-    // Estimate of performance: O(R + S), where R is the number of regions the stop is in, S is the number of stops within each region
-    // Short rationale for estimate: Find initial region O(1) + visit all regions and their stops O(R + S)
+    // Estimate of performance: O(N), Omega(1)
+    // Short rationale for estimate: Find initial region O(1) + visit all regions and their stops O(N)
     std::pair<Coord, Coord> region_bounding_box(RegionID id);
 
-    // Estimate of performance: O(R1 + R2), where R1 and R2 are the number of regions stop 1 and 2 are in respectively.
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: The function travels up the region tree for both stops. Best case scenario they are in the same smallest region already.
     RegionID stops_common_region(StopID id1, StopID id2);
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: Need to iterate through the proposed stops vector to check for validity O(N), best case first stop doesn't exist so function exists immediately.
     bool add_route(RouteID id, std::vector<StopID> stops);
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(N)
     // Short rationale for estimate: Iterate through the entire unordered map.
     std::vector<RouteID> all_routes();
 
-    // Estimate of performance: Constant
+    // Estimate of performance: O(1), Omega(1)
     // Short rationale for estimate: Finding the route by ID O(1) + removing the route by ID O(1), all in unordered map
     bool remove_route(RouteID id);
 
-    // Estimate of performance: O(R x N) where R is the number of routes and average number of stops in a route
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: Loops through every route, and also loops through every stops in a route
     std::vector<std::pair<RouteID, StopID>> routes_from(StopID stopid);
 
-    // Estimate of performance: O(N)
+    // Estimate of performance: O(N), Omega(1)
     // Short rationale for estimate: O(1) route lookup + O(N) for copying the elements if applicable.
     std::vector<StopID> route_stops(RouteID id);
 
-    // Estimate of performance: Constant
-    // Short rationale for estimate: unordered map clear O(1) as per cppreferences.
+    // Estimate of performance: O(N), Omega(N)
+    // Short rationale for estimate: unordered map clear O(N) as per cppreferences.
     void clear_routes();
 
-    // Notation for below functions:
-    // V = number of stops
-    // R = number of routes
-    // S = total number of stops across all routes
-
-    // Estimate of performance: O(V x (R + S))
-    // Short rationale for estimate:BFS visits each stop once, but for every stop it has to
+    // Estimate of performance: O(N^2), Omega(1)
+    // Short rationale for estimate: BFS visits each stop once, but for every stop it has to
     // iterate through all routes and their stops to find neighbouring stops using get_neighbours().
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_any(StopID fromstop, StopID tostop);
 
 //    // Non-compulsory operations
 
-    // Estimate of performance: O(V x (R + S))
+    // Estimate of performance: O(N^2), Omega(1)
     // Short rationale for estimate: Similarly to journey_any, BFS visits each stop once and
     // has to iterate through all routes and their stops to find neighbouring stops.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_least_stops(StopID fromstop, StopID tostop);
 
-    // Estimate of performance: O(V x (R + S))
+    // Estimate of performance: O(N^2), Omega(1)
     // Short rationale for estimate: DFS visits each stop once and for every stop it has to
     // iterate through all routes and their stops to find the next stops to visit.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_with_cycle(StopID fromstop);
 
-    // Estimate of performance: O(V x (R + S) + S log S)
+    // Estimate of performance: O(N^2), Omega(1)
     // Short rationale for estimate: Dijkstra visits stops based on their shortest distance.
     // For every stop it has to iterate through all routes and their stops to find neighbours.
     // The priority queue also requires sorting operations when adding and removing elements.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_shortest_distance(StopID fromstop, StopID tostop);
-
 private:
     // Add stuff needed for your class implementation here
     // Explain below your rationale for choosing the data structures you use in
