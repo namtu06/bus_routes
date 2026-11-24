@@ -555,11 +555,75 @@ void Datastructures::clear_routes()
     routes.clear();
 }
 
-std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_any(StopID /*fromstop*/, StopID /*tostop*/)
+std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_any(StopID fromstop, StopID tostop)
 {
-    // replace with your implementation
-    throw NotImplemented();
+    std::vector<std::tuple<StopID, RouteID, Distance>> result;
 
+    auto stop_itr1 = stops.find(fromstop);
+    auto stop_itr2 = stops.find(tostop);
+
+    if(stop_itr1 == stops.end() || stop_itr2 == stops.end()){
+        return {{NO_STOP, NO_ROUTE, NO_DISTANCE}};
+    }
+    else if(fromstop == tostop){
+        return {{fromstop, NO_ROUTE, 0}};
+    }
+
+    // Data structures for BFS - search for any route
+    std::queue<StopID> queue; // stops to be explored
+    std::unordered_set<StopID> visited;
+    std::unordered_map<StopID, StopID> previous; // records where each stop was reached from
+
+    // Performing BFS
+    queue.push(fromstop);
+    visited.emplace(fromstop);
+
+    while(!queue.empty() && visited.find(tostop) == visited.end()){
+        StopID current_stop = queue.front();
+        queue.pop();
+        for (const auto& neighbour_pair : get_neighbours(current_stop)) {
+
+            StopID neighbour = neighbour_pair.first;
+
+            if (visited.find(neighbour) == visited.end()) {
+                visited.insert(neighbour);
+                previous[neighbour] = current_stop;
+                queue.push(neighbour);
+            }
+        }
+    }
+
+    // Destination not reachable
+    if (visited.find(tostop) == visited.end()) {
+        return {};
+    }
+
+    // Build path
+    std::vector<StopID> path;
+    StopID current = tostop;
+
+    while (current != fromstop) {
+        path.push_back(current);
+        current = previous[current];
+    }
+
+    path.push_back(fromstop);
+    std::reverse(path.begin(), path.end());
+
+    // Calculate cumulative distances and build result
+    Distance total_distance = 0;
+
+    for (std::size_t i = 0; i < path.size(); ++i) {
+        if (i > 0) {
+            total_distance += std::sqrt(
+                calculate_distance(path[i - 1], path[i])
+            );
+        }
+
+        result.push_back({path[i], NO_ROUTE, total_distance});
+    }
+
+    return result;
 }
 
 std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_least_stops(StopID /*fromstop*/, StopID /*tostop*/)
@@ -597,4 +661,31 @@ int Datastructures::calculate_distance(StopID id1, StopID id2)
     return (x1-x2)*(x1-x2) + (y1-y2)*(y1-y2);
 }
 
+std::vector<std::pair<StopID, RouteID>>
+Datastructures::get_neighbours(StopID stopid)
+{
+    std::vector<std::pair<StopID, RouteID>> neighbours;
 
+    for (const auto& pair : routes) {
+        const auto& route_stops = pair.second.stops;
+
+        for (std::size_t i = 0; i < route_stops.size(); ++i) {
+
+            if (route_stops[i] != stopid) {
+                continue;
+            }
+
+            // Previous stop
+            if (i > 0) {
+                neighbours.push_back({route_stops[i - 1], pair.first});
+            }
+
+            // Next stop
+            if (i + 1 < route_stops.size()) {
+                neighbours.push_back({route_stops[i + 1], pair.first});
+            }
+        }
+    }
+
+    return neighbours;
+}

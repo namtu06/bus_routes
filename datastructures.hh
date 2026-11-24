@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <functional>
 #include <source_location>
+#include <queue>
 
 // Omat includet
 #include <unordered_map>
@@ -289,6 +290,9 @@ private:
 
     // Helper function for calculating distance
     int calculate_distance(StopID id1, StopID id2);
+
+    // Helper function for getting neighbours of stops (nodes in route graphs)
+    std::vector<std::pair<StopID, RouteID>> get_neighbours(StopID stopid);
 };
 
 #endif // DATASTRUCTURES_HH
