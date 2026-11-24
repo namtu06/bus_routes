@@ -769,7 +769,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_
             return false;
         };
 
-    if (dfs(fromstop)) {
+    if (!dfs(fromstop)) {
         return {};
     }
 
