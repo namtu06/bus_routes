@@ -728,7 +728,7 @@ std::vector<std::tuple<StopID, RouteID, Distance>> Datastructures::journey_with_
 
     // DFS for checking cycle existencce
     std::function<bool(StopID, StopID, RouteID)> dfs =
-        [&](StopID current, StopID parent, RouteID parent_route) {
+        [&](StopID current) {
 
             visited.insert(current);
             active.insert(current);

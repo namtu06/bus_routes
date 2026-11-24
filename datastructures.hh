@@ -229,22 +229,32 @@ public:
     // Short rationale for estimate: unordered map clear O(1) as per cppreferences.
     void clear_routes();
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Notation for below functions:
+    // V = number of stops
+    // R = number of routes
+    // S = total number of stops across all routes
+
+    // Estimate of performance: O(V x (R + S))
+    // Short rationale for estimate:BFS visits each stop once, but for every stop it has to
+    // iterate through all routes and their stops to find neighbouring stops using get_neighbours().
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_any(StopID fromstop, StopID tostop);
 
 //    // Non-compulsory operations
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(V x (R + S))
+    // Short rationale for estimate: Similarly to journey_any, BFS visits each stop once and
+    // has to iterate through all routes and their stops to find neighbouring stops.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_least_stops(StopID fromstop, StopID tostop);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(V x (R + S))
+    // Short rationale for estimate: DFS visits each stop once and for every stop it has to
+    // iterate through all routes and their stops to find the next stops to visit.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_with_cycle(StopID fromstop);
 
-    // Estimate of performance:
-    // Short rationale for estimate:
+    // Estimate of performance: O(V x (R + S) + S log S)
+    // Short rationale for estimate: Dijkstra visits stops based on their shortest distance.
+    // For every stop it has to iterate through all routes and their stops to find neighbours.
+    // The priority queue also requires sorting operations when adding and removing elements.
     std::vector<std::tuple<StopID, RouteID, Distance>> journey_shortest_distance(StopID fromstop, StopID tostop);
 
 private:
@@ -291,7 +301,7 @@ private:
     // Helper function for calculating distance
     int calculate_distance(StopID id1, StopID id2);
 
-    // Helper function for getting neighbours of stops (nodes in route graphs)
+    // Helper function for getting neighbours of stops to be used in the last few functions (nodes in route graphs)
     std::vector<std::pair<StopID, RouteID>> get_neighbours(StopID stopid);
 };
 

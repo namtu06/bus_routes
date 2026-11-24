@@ -24,7 +24,7 @@ the functions met the requirements. I wanted to get a diagnosis and kooditorio h
 
 ### Part C:
 
-- Debug my implementation of DFS.
+- Debug my implementation of DFS, specfically for searching cycles.
 ## How and why the language model helped
 
 - Remind what STL functions are at my disposal when implementing the class function.
