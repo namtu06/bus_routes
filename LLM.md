@@ -24,7 +24,7 @@ the functions met the requirements. I wanted to get a diagnosis and kooditorio h
 
 ### Part C:
 
-- Suggest implementation of DFS.
+- Debug my implementation of DFS.
 ## How and why the language model helped
 
 - Remind what STL functions are at my disposal when implementing the class function.
@@ -35,7 +35,7 @@ the functions met the requirements. I wanted to get a diagnosis and kooditorio h
 ## What errors the language model made
 
 - Some times hallucinations get out of hand regarding what class functions have already been implemented, at that point I just fixed the problem(s) myself.
-
+- Got *extremely* stuck on the DFS debug.
 
 ## What the language model was unable to provide
 
